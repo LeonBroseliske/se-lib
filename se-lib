@@ -1,0 +1,236 @@
+#!/bin/bash
+
+### Settings
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/se-lib.cfg
+
+### Functions
+
+addlruser () {
+	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_add_local_recipient&domain=${domain}&local_part=${recipient}"
+	echo "${date} Added ${recipient} to the local recipient list for ${domain}" >> $logfile
+}
+
+checkapiversion () {
+	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_version&"
+}
+
+delmailuserincoming () {
+	validatemailaddress
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&domain=${maildomain}" | grep ,${mailuser}, | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&sender=${mailaddress}" | cut -d "," -f3)"
+
+	if [[ "${#msgids[0]}" -eq "" ]]; then
+		echo "No mails found for ${mailaddress}"
+		exit 1
+	fi
+
+	imax=$(echo "${#msgids[@]}")
+	i=0
+
+	if [ "$deleteconfirmation" = "true" ]; then
+		echo "Do you really want to remove ${imax} mails matching: ${mailaddress} ?"
+		read -r -p "[y/N] " response
+
+		if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+			exit 1
+		fi
+	fi
+
+	while [[ $i -le $imax ]]
+	do
+		messageid=""
+
+		for (( j=0; j<=50 && i<=${imax}; j++, i++ ))
+		do
+			messageid+=$(echo -n "${msgids[$i]}",)
+		done
+
+		messageids=$(echo $messageid | sed 's/.$//')
+		messageids=$(echo "${messageids%,}")
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_delete_queued_message_incoming&host=${filterhosts}&message_id=${messageids}&method=remove"
+		echo -n .
+	done
+
+	echo ".:Done"
+	echo "Deleted ${imax} mails from ${mailaddress}"
+	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $logfile
+}
+
+delmailuserincomingstr () {
+
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&domain=" | grep "${mailaddress}" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&sender=${mailaddress}&partial=true" | cut -d "," -f3)"
+
+	if [[ "${#msgids[0]}" -eq "" ]]; then
+		echo "No mails found for ${mailaddress}"
+		exit 1
+	fi
+
+	imax=$(echo "${#msgids[@]}")
+	i=0
+
+	if [ "$deleteconfirmation" = "true" ]; then
+		echo "Do you really want to remove ${imax} mails matching: ${mailaddress} in either recipient or sender in the outgoing delivery queue?"
+		read -r -p "[y/N] " response
+
+		if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+			exit 1
+		fi
+	fi
+
+	while [[ $i -le $imax ]]
+	do
+		messageid=""
+
+		for (( j=0; j<=50 && i<=${imax}; j++, i++ ))
+		do
+			messageid+=$(echo -n "${msgids[$i]}",)
+		done
+
+		messageids=$(echo $messageid | sed 's/.$//')
+		messageids=$(echo "${messageids%,}")
+
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_delete_queued_message_incoming&host=${filterhosts}&message_id=${messageids}&method=remove"
+		echo -n .
+	done
+
+	echo ".:Done"
+	echo "Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the incoming delivery queue"
+	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the incoming delivery queue" >> $logfile
+}
+
+delmailuseroutgoing () {
+	validatemailaddress
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&domain=${maildomain}" | grep ${mailaddress} | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&sender=${mailaddress}" | cut -d "," -f3)"
+
+	if [[ "${#msgids[0]}" -eq "" ]]; then
+		echo "No mails found for ${mailaddress}"
+		exit 1
+	fi
+
+	imax=$(echo "${#msgids[@]}")
+	i=0
+
+	if [ "$deleteconfirmation" = "true" ]; then
+		echo "Do you really want to remove ${imax} mails matching: ${mailaddress} ?"
+		read -r -p "[y/N] " response
+
+		if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+			exit 1
+		fi
+	fi
+
+	while [[ $i -le $imax ]]
+	do
+		messageid=""
+
+		for (( j=0; j<=50 && i<=${imax}; j++, i++ ))
+		do
+			messageid+=$(echo -n "${msgids[$i]}",)
+		done
+
+		messageids=$(echo $messageid | sed 's/.$//')
+		messageids=$(echo "${messageids%,}")
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_delete_queued_message_outgoing&host=${filterhosts}&message_id=${messageids}&method=remove"
+		echo -n .
+	done
+
+	echo ".:Done"
+	echo "Deleted ${imax} mails from ${mailaddress}"
+	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $logfile
+}
+
+delmailuseroutgoingstr () {
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&recipient=${mailaddress}&partial=true" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&sender=${mailaddress}&partial=true" | cut -d "," -f3)"
+
+	if [[ "${#msgids[0]}" -eq "" ]]; then
+		echo "No mails found for ${mailaddress}"
+		exit 1
+	fi
+
+	imax=$(echo "${#msgids[@]}")
+	i=0
+
+	if [ "$deleteconfirmation" = "true" ]; then
+		echo "Do you really want to remove ${imax} mails matching: ${mailaddress} in either recipient or sender in the outgoing delivery queue?"
+		read -r -p "[y/N] " response
+
+		if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+			exit 1
+		fi
+	fi
+
+	while [[ $i -le $imax ]]
+	do
+		messageid=""
+
+		for (( j=0; j<=50 && i<=${imax}; j++, i++ ))
+		do
+			messageid+=$(echo -n "${msgids[$i]}",)
+		done
+
+		messageids=$(echo $messageid | sed 's/.$//')
+		messageids=$(echo "${messageids%,}")
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_delete_queued_message_outgoing&host=${filterhosts}&message_id=${messageids}&method=remove"
+		echo -n .
+	done
+
+	echo ".:Done"
+	echo "Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the outgoing delivery queue"
+	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the outgoing delivery queue" >> $logfile
+}
+
+disablelrdomain () {
+	checkstatus=$(statuslrdomain | egrep ^"$domain" | awk {'print $2'})
+
+	if [ "$checkstatus" = "True" ]; then
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_set_use_local_recipient_list&domain=${domain}&enabled=false"
+		echo -e >> $logfile
+		echo "${date} Disabled the local recipient list for ${domain}" >> $logfile
+	fi
+}
+
+enablelrdomain () {
+	checkstatus=$(statuslrdomain | egrep ^"$domain" | awk {'print $2'})
+
+	if [ "$checkstatus" = "False" ]; then
+		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_set_use_local_recipient_list&domain=${domain}&enabled=true"
+		echo -e >> $logfile
+		echo "${date} Enabled the local recipient list for ${domain}" >> $logfile
+	fi
+}
+
+fetchrecipients () {
+	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_find_messages&domain=${domain}&from_date=`date -d '7 days ago' +'%s'`&to_date=`date +%s`&&predicate=and&partial=False&sort_field=datestamp&classification=&include_in_progress=False&columns=recipient&status=delivered" | sort | uniq
+}
+
+statuslrdomain () {
+        curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_use_local_recipient_list&domain=${domain}"
+}
+
+validatemailaddress () {
+	# Basic validation
+        if [[ ! $mailaddress =~ ^([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$) ]]; then
+		echo "Not a valid email address"
+		exit 1
+	else
+		mailuser=$(echo "${mailaddress}" | cut -f1 -d@)
+		maildomain=$(echo "${mailaddress}" | cut -f2 -d@)
+	fi
+}
+
+### Main
+
+if [ ! -f /usr/bin/curl ]; then
+	echo Curl is missing, please install Curl
+	exit 1
+fi
+
+# Check connectivity and store API version for potential version dependent API functions
+
+apiversion=$(checkapiversion)
+
+if [[ ! $apiversion =~ ^([0-9]{6}) ]]; then
+	echo "Check your API user credentials and connectivity to the SpamExperts cluster";
+	exit 1
+fi

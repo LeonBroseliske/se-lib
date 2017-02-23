@@ -1,0 +1,10 @@
+### Settings
+
+filterhosts='filter[1-4].mydomain.tld'
+seapihost=filter1.mydomain.tld
+seapiuser=exampleuser
+seapipassword=mypassword
+
+date=$(date +%Y%m%d%H%M)
+logfile=se-lib.log
+deleteconfirmation=true
