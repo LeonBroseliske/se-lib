@@ -26,6 +26,8 @@ Source the se-lib file in your bash script.
 
 	source se-lib
 
+Then set the required variables for the functions below and call the function.
+
 addlruser:
 
 Adds a user as local recipient to a certain domain. This needs the following variables set:
