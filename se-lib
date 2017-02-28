@@ -9,7 +9,7 @@ source $DIR/se-lib.cfg
 
 addlruser () {
 	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_add_local_recipient&domain=${domain}&local_part=${recipient}"
-	echo "${date} Added ${recipient} to the local recipient list for ${domain}" >> $DIR/$logfile
+	echo "${date} Added ${recipient} to the local recipient list for ${domain}" >> $logfile
 }
 
 checkapiversion () {
@@ -54,7 +54,7 @@ delmailuserincoming () {
 
 	echo ".:Done"
 	echo "Deleted ${imax} mails from ${mailaddress}"
-	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $DIR/$logfile
+	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $logfile
 }
 
 delmailuserincomingstr () {
@@ -96,7 +96,7 @@ delmailuserincomingstr () {
 
 	echo ".:Done"
 	echo "Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the incoming delivery queue"
-	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the incoming delivery queue" >> $DIR/$logfile
+	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the incoming delivery queue" >> $logfile
 }
 
 delmailuseroutgoing () {
@@ -137,7 +137,7 @@ delmailuseroutgoing () {
 
 	echo ".:Done"
 	echo "Deleted ${imax} mails from ${mailaddress}"
-	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $DIR/$logfile
+	echo "${date} Deleted ${imax} mails from ${mailaddress}" >> $logfile
 }
 
 delmailuseroutgoingstr () {
@@ -177,7 +177,7 @@ delmailuseroutgoingstr () {
 
 	echo ".:Done"
 	echo "Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the outgoing delivery queue"
-	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the outgoing delivery queue" >> $DIR/$logfile
+	echo "${date} Deleted ${imax} mails matching ${mailaddress} in either recipient or sender of the outgoing delivery queue" >> $logfile
 }
 
 disablelrdomain () {
@@ -185,8 +185,8 @@ disablelrdomain () {
 
 	if [ "$checkstatus" = "True" ]; then
 		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_set_use_local_recipient_list&domain=${domain}&enabled=false"
-		echo -e >> $DIR/$logfile
-		echo "${date} Disabled the local recipient list for ${domain}" >> $DIR/$logfile
+		echo -e >> $logfile
+		echo "${date} Disabled the local recipient list for ${domain}" >> $logfile
 	fi
 }
 
@@ -195,8 +195,8 @@ enablelrdomain () {
 
 	if [ "$checkstatus" = "False" ]; then
 		curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_set_use_local_recipient_list&domain=${domain}&enabled=true"
-		echo -e >> $DIR/$logfile
-		echo "${date} Enabled the local recipient list for ${domain}" >> $DIR/$logfile
+		echo -e >> $logfile
+		echo "${date} Enabled the local recipient list for ${domain}" >> $logfile
 	fi
 }
 
