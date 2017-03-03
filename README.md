@@ -55,7 +55,7 @@ Deletes a mail address from the outgoing queue, in either normal or frozen state
 
 delmailuseroutgoingstr:
 
-Deletes mails matching the supplied string from the incoming queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 per call.
+Deletes mails matching the supplied string from the outgoing queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 per call.
 
 	${mailaddress}	The string that needs to be deleted
 
