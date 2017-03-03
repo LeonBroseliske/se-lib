@@ -37,13 +37,13 @@ Adds a user as local recipient to a certain domain. This needs the following var
 
 delmailuserincoming:
 
-Deletes a mail address from the incoming queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 mails per call.
+Deletes all mails from a certain mail address from the incoming queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 mails per call.
 
 	${mailaddress}	The mail address that needs to be deleted
 
 delmailuserincomingstr:
 
-Deletes mails matching the supplied string from the incoming queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 mails per call.
+Deletes mails matching the supplied keyword in recipient and sender from the incoming queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 mails per call.
 
 	${mailaddress}	The string that needs to be deleted
 
@@ -55,7 +55,7 @@ Deletes a mail address from the outgoing queue, in either normal or frozen state
 
 delmailuseroutgoingstr:
 
-Deletes mails matching the supplied string from the outgoing queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 per call.
+Deletes mails matching the supplied keyword in recipient and sender from the outgoing queue, in either normal or frozen state. If it has a lot of mails in the queue, the API calls will use batches of 50 per call.
 
 	${mailaddress}	The string that needs to be deleted
 
