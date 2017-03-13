@@ -17,8 +17,10 @@ The following settings can be set in the config file:
 * seapiuser: the API user, default: exampleuser
 * seapipassword: the API users password, default: mypassword
 * date: the date format wanted in the log file, default: $(date +%Y%m%d%H%M)
-* logfile: the name of the log file, default: se-lib.log
 * deleteconfirmation: ask for confirmation before deleting in the queues, default: true
+* logfile: the name of the log file, default: se-lib.log
+* msgage: minimal age in seconds of messages in the queues, default: 300
+* msgagemax: maximal age in seconds of messages in the queues, this is typically 5 days, default: 432000
 
 ## Usage
 

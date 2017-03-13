@@ -18,7 +18,7 @@ checkapiversion () {
 
 delmailuserincoming () {
 	validatemailaddress
-	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&domain=${maildomain}" | grep ,${mailuser}, | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&sender=${mailaddress}" | cut -d "," -f3)"
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&time_queued=${msgage}-${msgagemax}&domain=${maildomain}" | grep ,${mailuser}, | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&time_queued=${msgage}-${msgagemax}&sender=${mailaddress}" | cut -d "," -f3)"
 
 	if [[ "${#msgids[0]}" -eq "" ]]; then
 		echo "No mails found for ${mailaddress}"
@@ -59,7 +59,7 @@ delmailuserincoming () {
 
 delmailuserincomingstr () {
 
-	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&domain=" | grep "${keyword}" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&sender=${keyword}&partial=true" | cut -d "," -f3)"
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&time_queued=${msgage}-${msgagemax}&domain=" | grep "${keyword}" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_delivery_queue&time_queued=${msgage}-${msgagemax}&sender=${keyword}&partial=true" | cut -d "," -f3)"
 
 	if [[ "${#msgids[0]}" -eq "" ]]; then
 		echo "No mails found for ${keyword}"
@@ -101,7 +101,7 @@ delmailuserincomingstr () {
 
 delmailuseroutgoing () {
 	validatemailaddress
-	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&domain=${maildomain}" | grep ${mailaddress} | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&sender=${mailaddress}" | cut -d "," -f3)"
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&time_queued=${msgage}-${msgagemax}&domain=${maildomain}" | grep ${mailaddress} | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&time_queued=${msgage}-${msgagemax}&sender=${mailaddress}" | cut -d "," -f3)"
 
 	if [[ "${#msgids[0]}" -eq "" ]]; then
 		echo "No mails found for ${mailaddress}"
@@ -141,7 +141,7 @@ delmailuseroutgoing () {
 }
 
 delmailuseroutgoingstr () {
-	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&recipient=${keyword}&partial=true" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&sender=${keyword}&partial=true" | cut -d "," -f3)"
+	readarray -t msgids <<< "$(curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&time_queued=${msgage}-${msgagemax}&recipient=${keyword}&partial=true" | cut -d "," -f3 && curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_delivery_queue&time_queued=${msgage}-${msgagemax}&sender=${keyword}&partial=true" | cut -d "," -f3)"
 
 	if [[ "${#msgids[0]}" -eq "" ]]; then
 		echo "No mails found for ${keyword}"

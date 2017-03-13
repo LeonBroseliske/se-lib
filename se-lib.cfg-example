@@ -6,5 +6,7 @@ seapiuser=exampleuser
 seapipassword=mypassword
 
 date=$(date +%Y%m%d%H%M)
-logfile=se-lib.log
 deleteconfirmation=true
+logfile=se-lib.log
+msgage=300
+msgagemax=432000
