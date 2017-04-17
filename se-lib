@@ -70,7 +70,7 @@ delmailuserincomingstr () {
 	i=0
 
 	if [ "$deleteconfirmation" = "true" ]; then
-		echo "Do you really want to remove ${imax} mails matching: ${keyword} in either recipient or sender in the outgoing delivery queue?"
+		echo "Do you really want to remove ${imax} mails matching: ${keyword} in either recipient or sender in the incoming delivery queue?"
 		read -r -p "[y/N] " response
 
 		if [[ ! $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
