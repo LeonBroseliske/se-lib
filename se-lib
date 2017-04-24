@@ -204,6 +204,12 @@ fetchrecipients () {
 	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_find_messages&domain=${domain}&from_date=`date -d '7 days ago' +'%s'`&to_date=`date +%s`&&predicate=and&partial=False&sort_field=datestamp&classification=&include_in_progress=False&columns=recipient&status=delivered" | sort | uniq
 }
 
+showoutgoingip () {
+	echo "Domain:  Filternode:           IPs:"
+	echo "--------------------------------------------------------------------------------"
+	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_outgoing_interfaces&domain=default&username="
+}
+
 statuslrdomain () {
         curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_get_use_local_recipient_list&domain=${domain}"
 }

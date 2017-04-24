@@ -78,3 +78,7 @@ fetchrecipients:
 List the active recipients for a certain domain in the past 7 days.
 
 	${domain}	The domain that the recipients should be listed for
+
+showoutgoingip:
+
+Shows the current IPs used for sending outgoing mails
