@@ -82,3 +82,7 @@ List the active recipients for a certain domain in the past 7 days.
 showoutgoingip:
 
 Shows the current IPs used for sending outgoing mails
+
+setdefaultoutgoingip:
+
+Sets the default outgoing IPs for the configured filter nodes
