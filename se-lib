@@ -209,6 +209,39 @@ setdefaultoutgoingip () {
 	echo "${date} Set defaults as outgoing IP(s) for ${filternode}" >> $logfile
 }
 
+setoutgoingip () {
+	readarray -t outgoingips <<< "$(echo ${outgoingip} | grep -Eo "([0-9]{1,3}[\.]){3}[0-9]{1,3}")"
+
+	if [ "$confirmation" = "true" ]; then
+		echo "Do you really want to set ${outgoingip} as the new outgoing IP(s) for ${filternode}?"
+		read -r -p "[y/N] " response
+
+		if [[ ! $response =~ ^([yY])$ ]]; then
+			exit 1
+		fi
+	fi
+
+	outgoingv4ips=""
+
+	if [[ "${#outgoingips[1]}" -eq "" ]]; then
+		outgoingv4ips=$(echo "${outgoingips[0]}")
+	else
+		imax=$(echo "${#outgoingips[@]}")
+		i=0
+
+		while [[ $i -le $imax ]]
+		do
+			outgoingv4ips+=$(echo -n "${outgoingips[$i]}"\%3B)
+			((i++))
+		done
+
+		outgoingv4ips=$(echo $outgoingv4ips | sed 's/\%3B\%3B//')
+	fi
+
+	curl -k -s "https://${seapiuser}:${seapipassword}@${seapihost}/cgi-bin/api?call=api_set_outgoing_interfaces&domain=default&filtering_host=${filternode}&interfaces=${outgoingv4ips}&username="
+	echo "${date} Set ${outgoingv4ips} as outgoing IP(s) for ${filternode}" >> $logfile
+}
+
 showoutgoingip () {
 	echo "Domain:  Filternode:           IPs:"
 	echo "--------------------------------------------------------------------------------"

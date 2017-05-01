@@ -83,6 +83,14 @@ setdefaultoutgoingip:
 
 Sets the default outgoing IPs (0.0.0.0) for the given filter node(s).
 
+setoutgoingip:
+
+Sets one or more outgoing IPv4 addresses as new outgoing IP(s) for a filter node
+
+	${confirmation}	If you want to get confirmation from the user before applying the new settings.
+	${filternode}	The filter node you want to change the outgoing IP(s) on.
+	${outgoingip}	The outgoing IP(s) you wish to apply to the filter node. The format is space seperated.
+
 showoutgoingip:
 
 Shows the current IPs used for sending outgoing mails.
