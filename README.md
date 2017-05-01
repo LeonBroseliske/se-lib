@@ -79,10 +79,10 @@ List the active recipients for a certain domain in the past 7 days.
 
 	${domain}	The domain that the recipients should be listed for
 
-showoutgoingip:
-
-Shows the current IPs used for sending outgoing mails
-
 setdefaultoutgoingip:
 
-Sets the default outgoing IPs for the configured filter nodes
+Sets the default outgoing IPs (0.0.0.0) for the given filter node(s).
+
+showoutgoingip:
+
+Shows the current IPs used for sending outgoing mails.
